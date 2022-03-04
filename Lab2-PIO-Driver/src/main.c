@@ -20,6 +20,8 @@
 
 #include "asf.h"
 
+
+
 /************************************************************************/
 /* defines                                                              */
 /************************************************************************/
@@ -246,6 +248,17 @@ uint32_t _pio_get(Pio *p_pio, const pio_type_t ul_type,
 
 
 
+void _delay_ms(int atraso){
+	int i = 0;
+	while (i<300000*atraso){
+		asm("nop");
+		i++;
+	}
+}
+
+
+
+
 /************************************************************************/
 
 // Função de inicialização do uC
@@ -324,9 +337,9 @@ int main(void)
 		  // Pisca LED
 		  for (int i=0; i<10; i++) {
 			  _pio_clear(LED1_PIO, LED1_PIO_IDX_MASK);  // Limpa o pino LED_PIO_PIN
-			  delay_ms(100);                         // delay
+			  _delay_ms(100);                         // delay
 			  _pio_set(LED1_PIO, LED1_PIO_IDX_MASK);    // Ativa o pino LED_PIO_PIN
-			  delay_ms(100);                         // delay
+			  _delay_ms(100);                         // delay
 		  }
 		  } else  {
 		  // Ativa o pino LED_IDX (par apagar)
@@ -337,9 +350,9 @@ int main(void)
 		 // Pisca LED
 		 for (int i=0; i<10; i++) {
 			 _pio_clear(LED2_PIO, LED2_PIO_IDX_MASK);  // Limpa o pino LED_PIO_PIN
-			 delay_ms(100);                         // delay
+			 _delay_ms(100);                         // delay
 			 _pio_set(LED2_PIO, LED2_PIO_IDX_MASK);    // Ativa o pino LED_PIO_PIN
-			 delay_ms(100);                         // delay
+			 _delay_ms(100);                         // delay
 		 }
 		 } else  {
 		 // Ativa o pino LED_IDX (par apagar)
@@ -350,9 +363,9 @@ int main(void)
 		// Pisca LED
 		for (int i=0; i<10; i++) {
 			_pio_clear(LED3_PIO, LED3_PIO_IDX_MASK);  // Limpa o pino LED_PIO_PIN
-			delay_ms(100);                         // delay
+			_delay_ms(100);                         // delay
 			_pio_set(LED3_PIO, LED3_PIO_IDX_MASK);    // Ativa o pino LED_PIO_PIN
-			delay_ms(100);                         // delay
+			_delay_ms(100);                         // delay
 		}
 		} else  {
 		// Ativa o pino LED_IDX (par apagar)
