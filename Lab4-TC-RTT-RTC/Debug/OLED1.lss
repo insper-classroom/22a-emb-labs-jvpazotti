@@ -33,9 +33,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  14 .debug_line   000108c0  00000000  00000000  0006a6d6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    00090946  00000000  00000000  0007af96  2**0
+ 15 .debug_str    0009097d  00000000  00000000  0007af96  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_frame  0000234c  00000000  00000000  0010b8dc  2**2
+ 16 .debug_frame  0000234c  00000000  00000000  0010b914  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -4422,12 +4422,27 @@ static void RTT_init(float freqPrescale, uint32_t IrqNPulses, uint32_t rttIRQSou
 	if (rttIRQSource & RTT_MR_ALMIEN) {
   40191a:	f417 3f80 	tst.w	r7, #65536	; 0x10000
   40191e:	d116      	bne.n	40194e <RTT_init+0x6a>
+
+    \param [in]      IRQn  External interrupt number. Value cannot be negative.
+ */
+__STATIC_INLINE void NVIC_DisableIRQ(IRQn_Type IRQn)
+{
   NVIC->ICER[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn) & 0x1F)); /* disable interrupt */
   401920:	4b19      	ldr	r3, [pc, #100]	; (401988 <RTT_init+0xa4>)
   401922:	2208      	movs	r2, #8
   401924:	f8c3 2080 	str.w	r2, [r3, #128]	; 0x80
+
+    \param [in]      IRQn  External interrupt number. Value cannot be negative.
+ */
+__STATIC_INLINE void NVIC_ClearPendingIRQ(IRQn_Type IRQn)
+{
   NVIC->ICPR[((uint32_t)(IRQn) >> 5)] = (1 << ((uint32_t)(IRQn) & 0x1F)); /* Clear pending interrupt */
   401928:	f8c3 2180 	str.w	r2, [r3, #384]	; 0x180
+__STATIC_INLINE void NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
+{
+  if(IRQn < 0) {
+    SCB->SHPR[((uint32_t)(IRQn) & 0xF)-4] = ((priority << (8 - __NVIC_PRIO_BITS)) & 0xff); } /* set Priority for Cortex-M  System Interrupts */
+  else {
     NVIC->IP[(uint32_t)(IRQn)]            = ((priority << (8 - __NVIC_PRIO_BITS)) & 0xff); } /* set Priority for device specific Interrupts  */
   40192c:	2180      	movs	r1, #128	; 0x80
   40192e:	f883 1303 	strb.w	r1, [r3, #771]	; 0x303
